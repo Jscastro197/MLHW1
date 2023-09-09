@@ -1,0 +1,135 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Read the data from the CSV file
+data = pd.read_csv("/telescope_data.csv")
+# Ignore the last column, which is the class label
+X = data.iloc[:, :-1].values
+
+# Compute the mean vector
+mean_vector = np.mean(X, axis=0)
+
+# Center the data
+centered_data = X - mean_vector
+
+# Compute the sample covariance matrix as inner products between the columns of the centered data matrix
+sample_covariance_matrix_1 = np.matmul(centered_data.T, centered_data) / (centered_data.shape[0] - 1)
+
+# Compute the sample covariance matrix as outer product between the centered data points
+sample_covariance_matrix_2 = np.zeros((10, 10))
+for i in range(10):
+    for j in range(10):
+        sample_covariance_matrix_2[i][j] = np.mean((centered_data[:, i] - mean_vector[i]) * (centered_data[:, j] - mean_vector[j]))
+
+# Print the results
+print("Multivariate mean vector:")
+print(mean_vector)
+print("Sample covariance matrix (inner product):")
+print(sample_covariance_matrix_1)
+print("Sample covariance matrix (outer product):")
+print(sample_covariance_matrix_2)
+# Ignore the last column, which is the class label
+X = data.iloc[:, :-1].values
+
+
+def correlation_coefficient(x, y):
+    """
+    Compute the correlation coefficient between two vectors.
+
+    Args:
+        x: A vector.
+        y: Another vector.
+
+    Returns:
+        The correlation coefficient between x and y.
+    """
+    x_mean = np.mean(x)
+    y_mean = np.mean(y)
+    x_var = np.var(x)
+    y_var = np.var(y)
+    numerator = np.sum((x - x_mean) * (y - y_mean))
+    denominator = np.sqrt(x_var * y_var)
+    return numerator / denominator
+
+
+def scatter_plot(x, y):
+    """
+    Plot the scatter plot of two vectors.
+
+    Args:
+        x: A vector.
+        y: Another vector.
+    """
+    plt.figure()
+    plt.scatter(x, y)
+    plt.xlabel("Attribute 1")
+    plt.ylabel("Attribute 2")
+    plt.title("Scatter Plot of Attributes 1 and 2")
+    plt.show()
+
+
+def pdf(x, mean, var):
+    """
+    Compute the probability density function of a normal distribution.
+
+    Args:
+        x: A value.
+        mean: The mean of the distribution.
+        var: The variance of the distribution.
+
+    Returns:
+        The probability density function at x.
+    """
+    return (1 / np.sqrt(2 * np.pi * var)) * np.exp(-(x - mean)**2 / (2 * var))
+
+
+def empirical_cdf(x):
+    """
+    Compute the empirical cumulative distribution function of a set of data.
+
+    Args:
+        x: A set of data.
+
+    Returns:
+        The empirical cumulative distribution function.
+    """
+    y = np.sort(x)
+    n = len(x)
+    cdf = np.arange(1, n + 1) / n
+    return cdf
+
+
+# Compute the correlation coefficient between attributes 1 and 2
+correlation = correlation_coefficient(X[:, 0], X[:, 1])
+print("Correlation between attributes 1 and 2:", correlation)
+
+# Plot the scatter plot of attributes 1 and 2
+scatter_plot(X[:, 0], X[:, 1])
+
+# Assume that attribute 1 is normally distributed
+mean_1 = np.mean(X[:, 0])
+var_1 = np.var(X[:, 0])
+
+# Plot the probability density function of attribute 1
+x = np.linspace(mean_1 - 3 * np.sqrt(var_1), mean_1 + 3 * np.sqrt(var_1), 100)
+plt.figure()
+plt.plot(x, pdf(x, mean_1, var_1))
+plt.xlabel("Attribute 1")
+plt.ylabel("Probability density")
+plt.title("Probability density function of Attribute 1")
+plt.show()
+
+# Compute the empirical CDFs of attributes 2, 5, and 7
+cdf_2 = empirical_cdf(X[:, 1])
+cdf_5 = empirical_cdf(X[:, 4])
+cdf_7 = empirical_cdf(X[:, 6])
+
+# Plot the empirical CDFs of attributes 2, 5, and 7
+plt.figure()
+plt.plot(X[:, 1], cdf_2, label="Attribute 2")
+plt.plot(X[:, 4], cdf_5, label="Attribute 5")
+plt.plot(X[:, 6], cdf_7, label="Attribute 7")
+plt.xlabel("Attribute value")
+plt.ylabel("Cumulative distribution")
+plt.legend()

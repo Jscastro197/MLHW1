@@ -1,27 +1,26 @@
 import numpy as np
-import csv
+import pandas as pd
 
-with open('telescope_data.csv', 'r') as f:
-  reader = csv.reader(f)
-  data_csv = list(reader)
+data_csv = pd.read_csv("telescope_data.csv")
 
-#   print(data_csv)
+# Identify non-numeric columns
+non_numeric_columns = data_csv.select_dtypes(exclude=[np.number]).columns.tolist()
 
-# Create your data matrix (replace this with your actual data)
-data = np.array([[1, 2, 3],
-                 [4, 5, 6],
-                 [7, 8, 9]])
+# Convert non-numeric columns to numeric
+data_csv[non_numeric_columns] = data_csv[non_numeric_columns].apply(pd.to_numeric, errors='coerce')
 
-# Compute the mean of each column
+data_csv.iloc[:, :-1].values
+
+# Convert the DataFrame to a numpy array
+data = data_csv.to_numpy()
+
+# Calculate the multivariate mean vector
 mean_vector = np.mean(data, axis=0)
 print(mean_vector)
 
-# Center the data by subtracting the mean from each column
+print("2. Compute the sample covariance matrix as inner products between the columns of the centered data matrix")
 centered_data = data - mean_vector
 
-# Compute the sample covariance matrix
-covariance_matrix = np.cov(centered_data, rowvar=False)
+cov1 = np.dot(centered_data.T,centered_data)/centered_data.shape[0]
 
-# rowvar=False means that variables are represented by columns (not rows)
-
-# print("Sample Covariance Matrix:")
+print(cov1)
