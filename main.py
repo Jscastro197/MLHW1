@@ -25,4 +25,10 @@ centered_data = data - mean_vector
 cov1 = np.dot(centered_data.T, centered_data) / centered_data.shape[0]
 print(cov1)
 
-print("Compute the sample covariance matrix as outer product between the centered data points: ")
+print("3. Compute the sample covariance matrix as outer product between the centered data points: ")
+
+cov2 = np.zeros((centered_data.shape[1],centered_data.shape[1]))
+for row in centered_data:
+  cov2+=np.outer(row,row)
+cov2 = cov2/data.shape[0]
+print(cov2)
