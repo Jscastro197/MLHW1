@@ -24,3 +24,5 @@ print("2. Compute the sample covariance matrix as inner products between the col
 centered_data = data - mean_vector
 cov1 = np.dot(centered_data.T, centered_data) / centered_data.shape[0]
 print(cov1)
+
+print("Compute the sample covariance matrix as outer product between the centered data points: ")
