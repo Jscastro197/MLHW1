@@ -24,4 +24,4 @@ covariance_matrix = np.cov(centered_data, rowvar=False)
 
 # rowvar=False means that variables are represented by columns (not rows)
 
-# print("Sample Covariance Matrix:")
+# print("Sample Covariance Matrix:")
